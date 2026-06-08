@@ -823,7 +823,7 @@ When a `<style>` block is used as the initializer of a JavaScript variable decla
 
 The variable declaration may appear inside a component or at module scope. Module-scope declarations use the same class-map behavior and can be referenced by multiple components in the file.
 
-In this mode, only class selectors are permitted.
+In this mode, class selectors define the properties available on the generated class map.
 
 ### Position
 
@@ -831,7 +831,7 @@ Initializer of a JavaScript variable declaration, either in local scope or modul
 
 ### Selectors Allowed
 
-* Class selectors only
+* Class selectors that should become class-map properties
 
 ### Output Shape
 
@@ -848,9 +848,9 @@ At runtime, the resulting `styles` value behaves like a plain object mapping dec
 
 ### Constraints
 
-* Semantic tag selectors are not permitted in variable-declared style blocks.
+* Use a JSX-child `<style>` block when semantic tag selectors such as `h1`, `p`, or `div` should be scoped automatically.
 * Class references are type-safe.
-* Accessing an undefined class name is invalid.
+* The generated class-map type exposes the class selectors declared in the block.
 
 ### Local Example
 
@@ -886,17 +886,13 @@ The `.paragraph` class is available through the module-scope `styles` map. To st
 
 ## Constraints and Escape Hatches
 
-TSRX’s native CSS parsing is the one explicit exception to its strict superset rule. Standard JSX style-string children are invalid in a `.tsrx` file:
+TSRX’s native CSS parsing is the one explicit exception to its strict superset rule: a `<style>` block contains CSS source directly.
 
-```tsx
-<style>{`h1 { color: red; }`}</style>
-```
-
-At module scope, `<style>` is supported only through a variable declaration; an unassigned module-root `<style>` tag is not valid TSRX.
+Use the variable-declared class-map form for module-scope styles.
 
 Use `:global(...)` when a selector should intentionally target global or external markup instead of receiving TSRX’s generated scoping.
 
-`<style>` contents are static CSS. For runtime-dependent values, set CSS custom properties on JSX elements, such as `style={{ '--box-color': color }}`, and read them from CSS with `var(--box-color)` instead of interpolating JavaScript inside `<style>` blocks.
+`<style>` contents are static CSS. For runtime-dependent values, set CSS custom properties on JSX elements, such as `style={{ '--box-color': color }}`, and read them from CSS with `var(--box-color)`.
 
 ---
 
