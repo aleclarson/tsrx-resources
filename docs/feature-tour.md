@@ -819,7 +819,7 @@ The `h1` and `div` selectors are scoped to the component layout where the style 
 
 ## B. `<style>` as a Variable-Declared Class Map
 
-When a `<style>` block is used as the initializer of a JavaScript variable declaration, it compiles to a type-safe `Record<string, string>` containing mappings to generated, scoped class names.
+When a `<style>` block is used as the initializer of a JavaScript variable declaration, it compiles to a class-map object whose values are generated, scoped class names. The available properties correspond to the class selectors declared in the block.
 
 The variable declaration may appear inside a component or at module scope. Module-scope declarations use the same class-map behavior and can be referenced by multiple components in the file.
 
@@ -844,11 +844,7 @@ const classes = <style>
 </style>;
 ```
 
-The resulting `classes` value behaves like:
-
-```ts
-Record<string, string>
-```
+At runtime, the resulting `classes` value behaves like a plain object mapping declared class names to generated class-name strings.
 
 ### Constraints
 
