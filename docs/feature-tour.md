@@ -913,7 +913,7 @@ The `.paragraph` class is available through the module-scope `styles` map. To st
 
 ---
 
-# 6. Fine-Grained Reactive Framework Feature: Lazy Destructuring (`&`)
+# 6. Lazy Destructuring (`&`)
 
 For fine-grained reactive framework targets such as **Solid**, **Vue**, and **Ripple**, destructuring properties immediately can break the tracking graph by reading primitive accessor values too early.
 
