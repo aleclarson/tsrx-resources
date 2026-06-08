@@ -1,6 +1,6 @@
 ---
 name: tsrx
-description: Use when writing, editing, or reviewing TSRX (.tsrx): JSX-shaped TypeScript templates with @ control flow, statement blocks, native CSS, conditional hooks, and lazy destructuring.
+description: Use when writing, editing, or reviewing TSRX (.tsrx)
 ---
 
 # TSRX Syntax Mechanics
