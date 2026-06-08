@@ -848,9 +848,8 @@ At runtime, the resulting `styles` value behaves like a plain object mapping dec
 
 ### Constraints
 
-* Use a JSX-child `<style>` block when semantic tag selectors such as `h1`, `p`, or `div` should be scoped automatically.
-* Class references are type-safe.
-* The generated class-map type exposes the class selectors declared in the block.
+* Use a JSX-child `<style>` block when semantic tag selectors such as `h1`, `p`, or `div` are needed.
+* The class-map variable is type-safe: declared classes autocomplete, and unknown class properties are reported by TypeScript.
 
 ### Local Example
 
