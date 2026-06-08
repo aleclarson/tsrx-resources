@@ -4,6 +4,8 @@ TSRX is a strict, compiler-agnostic superset of JSX and TypeScript with official
 
 With one explicit exception regarding standard `<style>` tags, every feature introduced by TSRX is entirely optional. Valid JSX and TypeScript code remains valid when pasted directly into a `.tsrx` file.
 
+This compatibility claim applies to JSX and TypeScript syntax, not necessarily to literal JSX text that contains TSRX syntax markers. For example, text containing `@if` may be parsed as TSRX control-flow syntax instead of being rendered as text, which can change behavior or produce a compiler error. Use an explicit JSX string expression, such as `{'@if'}`, when TSRX syntax should appear as literal text.
+
 A core philosophical pillar of TSRX is **locality**: layout structures, styling, and their direct data or logic dependencies should live as close to each other as possible. TSRX is designed with deliberate architectural restraint to prevent this locality from turning into spaghetti code. The creators of TSRX explicitly recommend splitting deeply nested structures into dedicated child components to keep complexity manageable.
 
 ---
