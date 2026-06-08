@@ -20,6 +20,7 @@ TSRX introduces the following syntax-level features:
 * `@{ ... }`: inline statement containers
 * Function body `@{ ... }`: JSX-producing component bodies
 * JavaScript comments in JSX: `//` and `/* ... */` without expression containers
+* JSX attribute shorthand: `{foo}` as `foo={foo}` in attribute position
 * Conditional hooks: compile-time hook-safe extraction
 * Native `<style>` blocks: scoped CSS and class-map generation
 * `&` lazy destructuring: reactivity-preserving destructuring for Solid and Ripple
@@ -72,6 +73,22 @@ TSRX supports normal JavaScript comment syntax inside JSX templates. Both `//` a
   <SecondaryActions />
 </div>
 ```
+
+### JSX Attribute Shorthand
+
+TSRX supports shorthand for passing a value as a JSX attribute with the same name. In JSX attribute position, `{foo}` is equivalent to `foo={foo}`.
+
+```tsx
+<Card {user} {isSelected} />
+```
+
+This is equivalent to:
+
+```tsx
+<Card user={user} isSelected={isSelected} />
+```
+
+The shorthand is recognized only in JSX attribute position. Between JSX tags, `{foo}` remains a normal JSX child expression.
 
 ### Valid Positions
 
@@ -984,6 +1001,14 @@ const classes = <style>
 ```
 
 Used for scoped, type-safe CSS class maps.
+
+## JSX Attribute Shorthand
+
+```tsx
+<Component {foo} />
+```
+
+Equivalent to `foo={foo}` when used in JSX attribute position.
 
 ## Lazy Destructuring
 
