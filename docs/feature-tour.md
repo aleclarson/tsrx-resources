@@ -655,7 +655,7 @@ function ProjectSummary({ projects }: { projects: Project[] }) @{
 }
 ```
 
-The function body remains statement-oriented while allowing nested TSRX scopes, such as `@for`, `@if`, and local declarations, to stay directly inside the JSX layout they support.
+Using `@{ ... }` for the component body keeps the whole component in a single template-oriented flow: setup can appear before the returned markup, and nested loops or conditionals can declare local values immediately before the JSX that consumes them. In this example, `openTasks` stays inside the project loop and `label` stays inside the task loop, without falling back to nested `.map()` callbacks, ternaries, or IIFEs.
 
 ### Reactive Guard Clauses in Fine-Grained Targets
 
