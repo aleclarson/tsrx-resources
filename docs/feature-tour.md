@@ -705,7 +705,7 @@ This is the one explicit exception to TSRX’s strict superset rule: standard JS
 <style>{`color: red`}</style>
 ```
 
-TSRX supports three distinct compilation modes for `<style>` blocks.
+TSRX supports scoped `<style>` blocks in JSX layout and class-map `<style>` expressions assigned to variables. At module scope, `<style>` is supported only through a variable declaration; an unassigned module-root `<style>` tag is not valid TSRX.
 
 ---
 
@@ -807,35 +807,36 @@ The style block defines a scoped class map that can be consumed directly from Ty
 
 ---
 
-## C. `<style>` at Module Scope
+## C. `<style>` in Module Scope
 
-When written directly at the module root scope without variable assignment, a `<style>` block applies globally to JSX elements throughout that module.
+At module scope, TSRX supports `<style>` only as the initializer of a variable declaration. A bare module-root `<style>...</style>` block is not valid TSRX.
+
+Module-scope style variables use the same class-map behavior as expression style blocks and are useful when multiple components in the file need to share generated class names.
 
 ### Position
 
-Module root scope.
+Assigned directly to a JavaScript variable at module root scope.
 
 ### Selectors Allowed
 
-* Global CSS selectors
+* Class selectors only
 
 ### Output Shape
 
-The compiler emits CSS that applies across the module.
+The compiler extracts the CSS and initializes the variable with a class-name mapping object that can be referenced by any component in the module.
 
 ### Example
 
 ```tsx
-// Applies to all components within this module file
-<style>
-  p { line-height: 1.5; }
-</style>
+const classes = <style>
+  .paragraph { line-height: 1.5; }
+</style>;
 
-export function ComponentA() @{ <p>Paragraph A</p> }
-export function ComponentB() @{ <p>Paragraph B</p> }
+export function ComponentA() @{ <p className={classes.paragraph}>Paragraph A</p> }
+export function ComponentB() @{ <p className={classes.paragraph}>Paragraph B</p> }
 ```
 
-The `p` selector applies to paragraph elements defined across the module.
+The `.paragraph` class is available through the module-scope `classes` map. To style semantic elements without manually applying classes, place the `<style>` block inside JSX layout instead.
 
 ---
 
