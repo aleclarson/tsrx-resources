@@ -7,7 +7,7 @@ description: Use when writing, editing, or reviewing TSRX (.tsrx)
 
 TSRX is TypeScript + JSX with opt-in syntax for JSX-producing templates. Existing TypeScript and JSX keep their meanings, with native `<style>` blocks parsed as CSS. To render syntax markers as text, use JSX string expressions like `{'@if'}`.
 
-For legacy `tsrx-preact` migration notes, read `references/migration.md`.
+For legacy TSRX migration notes, read `references/migration.md`.
 
 ## Template Result Rule
 
