@@ -51,7 +51,7 @@ There are two important boundaries:
 
 ---
 
-## Core Concept: The TSRX Template (`@`)
+## Core Model: TSRX Templates (`@`)
 
 The defining feature of TSRX is the **TSRX template**, denoted by the `@` prefix.
 
@@ -962,7 +962,7 @@ Object patterns may destructure getter-backed properties. Object rest preserves 
 * It is not required for targets whose reactivity model is not affected by eager destructuring.
 * The emitted implementation depends on the selected compiler target.
 
-### Example
+### Object Destructuring Example
 
 ```tsx
 // Destructuring props lazily in Solid, Vue, or Ripple without losing reactivity
@@ -986,6 +986,8 @@ function TaskManager(props) @{
 }
 ```
 
+### Getter and Rest Example
+
 Getter-backed properties and object rest work with the same syntax. In this example, `displayName` may be a getter, and any getter properties collected into `details` keep their descriptors.
 
 ```tsx
@@ -995,6 +997,8 @@ function UserCard(source) @{
   <article title={details.title}>{displayName}</article>
 }
 ```
+
+### Array Destructuring Example
 
 Lazy destructuring also works with array patterns.
 
