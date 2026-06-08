@@ -596,36 +596,68 @@ Function body templates are valid as:
 ### Traditional JSX
 
 ```tsx
-// Traditional Function Declaration
-function UserDeclaration({ user }: { user: User | null }) {
-  if (!user) return <p>No profile data available.</p>;
-  return <div className="card">{user.name}</div>;
-}
+function ProjectSummary({ projects }: { projects: Project[] }) {
+  return (
+    <div className="projects">
+      {projects.length === 0 ? (
+        <p>No projects available.</p>
+      ) : (
+        projects.map((project) => {
+          const openTasks = project.tasks.filter((task) => !task.done);
 
-// Traditional Arrow Function
-const UserArrow = ({ user }: { user: User | null }) => {
-  if (!user) return <p>No profile data available.</p>;
-  return <div className="card">{user.name}</div>;
-};
+          return (
+            <section key={project.id}>
+              <h2>{project.name}</h2>
+
+              {openTasks.length > 0 ? (
+                <ul>
+                  {openTasks.map((task, i) => {
+                    const label = `${i + 1}. ${task.title}`;
+                    return <li key={task.id}>{label}</li>;
+                  })}
+                </ul>
+              ) : (
+                <p>All tasks complete.</p>
+              )}
+            </section>
+          );
+        })
+      )}
+    </div>
+  );
+}
 ```
 
 ### TSRX Equivalent
 
 ```tsx
-// TSRX Function Declaration
-function UserDeclaration({ user }: { user: User | null }) @{
-  if (!user) return <p>No profile data available.</p>;
-  <div className="card">{user.name}</div>
-}
+function ProjectSummary({ projects }: { projects: Project[] }) @{
+  <div className="projects">
+    @for (const project of projects; key project.id) {
+      const openTasks = project.tasks.filter((task) => !task.done);
 
-// TSRX Arrow Function
-const UserArrow = ({ user }: { user: User | null }) => @{
-  if (!user) return <p>No profile data available.</p>;
-  <div className="card">{user.name}</div>
+      <section>
+        <h2>{project.name}</h2>
+
+        @if (openTasks.length > 0) {
+          <ul>
+            @for (const task of openTasks; index i; key task.id) {
+              const label = `${i + 1}. ${task.title}`;
+              <li>{label}</li>
+            }
+          </ul>
+        } @else {
+          <p>All tasks complete.</p>
+        }
+      </section>
+    } @empty {
+      <p>No projects available.</p>
+    }
+  </div>
 }
 ```
 
-The function body remains statement-oriented while eliminating the final explicit `return`.
+The function body remains statement-oriented while allowing nested TSRX scopes, such as `@for`, `@if`, and local declarations, to stay directly inside the JSX layout they support.
 
 ---
 
