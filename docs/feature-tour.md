@@ -838,13 +838,13 @@ Initializer of a JavaScript variable declaration, either in local scope or modul
 The compiler extracts the CSS and initializes the variable with a class-name mapping object.
 
 ```tsx
-const classes = <style>
+const styles = <style>
   .cardContainer { border: 1px solid #ccc; }
   .titleText { font-weight: bold; }
 </style>;
 ```
 
-At runtime, the resulting `classes` value behaves like a plain object mapping declared class names to generated class-name strings.
+At runtime, the resulting `styles` value behaves like a plain object mapping declared class names to generated class-name strings.
 
 ### Constraints
 
@@ -856,13 +856,13 @@ At runtime, the resulting `classes` value behaves like a plain object mapping de
 
 ```tsx
 function CustomCard() @{
-  const classes = <style>
+  const styles = <style>
     .cardContainer { border: 1px solid #ccc; }
     .titleText { font-weight: bold; }
   </style>;
 
-  <div className={classes.cardContainer}>
-    <span className={classes.titleText}>Card Header</span>
+  <div className={styles.cardContainer}>
+    <span className={styles.titleText}>Card Header</span>
   </div>
 }
 ```
@@ -872,15 +872,15 @@ The style block defines a scoped class map that can be consumed directly from Ty
 ### Module-Scope Example
 
 ```tsx
-const classes = <style>
+const styles = <style>
   .paragraph { line-height: 1.5; }
 </style>;
 
-export function ComponentA() @{ <p className={classes.paragraph}>Paragraph A</p> }
-export function ComponentB() @{ <p className={classes.paragraph}>Paragraph B</p> }
+export function ComponentA() @{ <p className={styles.paragraph}>Paragraph A</p> }
+export function ComponentB() @{ <p className={styles.paragraph}>Paragraph B</p> }
 ```
 
-The `.paragraph` class is available through the module-scope `classes` map. To style semantic elements without manually applying classes, place the `<style>` block inside JSX layout instead.
+The `.paragraph` class is available through the module-scope `styles` map. To style semantic elements without manually applying classes, place the `<style>` block inside JSX layout instead.
 
 ---
 
