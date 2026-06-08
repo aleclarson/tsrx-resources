@@ -64,12 +64,10 @@ Legacy TSRX treated JSX as statements and allowed local JavaScript directly insi
 Current TSRX keeps JSX text and expression rules. Use `@{ ... }` for local statements inside layout:
 
 ```tsx
-<div>
-  @{
-    const greeting = `Hello, ${name}`;
-    <p>Greeting: {greeting}</p>
-  }
-</div>
+<div>@{
+  const greeting = `Hello, ${name}`;
+  <p>Greeting: {greeting}</p>
+}</div>
 ```
 
 Top-level component output now comes from one final JSX-producing statement. Wrap sibling outputs in a fragment:

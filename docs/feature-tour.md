@@ -514,10 +514,10 @@ They replace common JSX patterns such as defining and immediately invoking an II
 ### Syntax
 
 ```tsx
-@{
+<div>@{
   const value = computeValue();
   <span>{value}</span>
-}
+}</div>
 ```
 
 ### Output Shape
@@ -557,13 +557,11 @@ function PriceDisplay({ rawPrice, taxRate }: { rawPrice: number; taxRate: number
 ```tsx
 function PriceDisplay({ rawPrice, taxRate }: { rawPrice: number; taxRate: number }) {
   return (
-    <div className="price-tag">
-      @{
-        const total = rawPrice * (1 + taxRate);
-        const formatted = total.toFixed(2);
-        <span>${formatted}</span>
-      }
-    </div>
+    <div className="price-tag">@{
+      const total = rawPrice * (1 + taxRate);
+      const formatted = total.toFixed(2);
+      <span>${formatted}</span>
+    }</div>
   );
 }
 ```

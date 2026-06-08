@@ -20,6 +20,15 @@ For legacy TSRX migration notes, read `references/migration.md`.
 }
 ```
 
+As a JSX child, mirror formatter shape:
+
+```tsx
+<div>@{
+  const value = compute();
+  <View value={value} />
+}</div>
+```
+
 Final JSX-producing forms: JSX element, JSX fragment, `@if`, `@for`, `@switch`, `@try`. Wrap final text or expression values in a fragment: `<>{label}</>`.
 
 `return` is available only in top-level TSRX function bodies. Other TSRX blocks yield their final JSX-producing statement.
