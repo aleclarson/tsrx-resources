@@ -62,7 +62,20 @@ The final statement may be:
 * The final statement must produce JSX.
 * Naked text strings or lone JavaScript expressions in the final position must be wrapped in a JSX fragment, such as `<>Text</>`.
 * A TSRX template does not need to be wrapped in curly braces when nested inside JSX layout.
-* Standard JavaScript line and block comments may be written directly inside JSX templates without a JSX expression container.
+
+### Valid Positions
+
+TSRX templates can be used in three main positions:
+
+1. As a JavaScript expression
+2. Inside an existing JSX template
+3. As a function body declaration
+
+---
+
+## JSX Syntax Conveniences
+
+TSRX also includes a small set of JSX authoring conveniences that are independent of TSRX template control flow.
 
 ### JavaScript Comments in JSX
 
@@ -93,14 +106,6 @@ This is equivalent to:
 ```
 
 The shorthand is recognized only in JSX attribute position. Between JSX tags, `{foo}` remains a normal JSX child expression.
-
-### Valid Positions
-
-TSRX templates can be used in three main positions:
-
-1. As a JavaScript expression
-2. Inside an existing JSX template
-3. As a function body declaration
 
 ---
 
