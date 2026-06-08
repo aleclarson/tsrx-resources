@@ -26,7 +26,7 @@ TSRX introduces the following syntax-level features:
 * JSX attribute shorthand: `{foo}` as `foo={foo}` in attribute position
 * Conditional hooks: compile-time hook-safe extraction
 * Native `<style>` blocks: scoped CSS and class-map generation
-* `&` lazy destructuring: reactivity-preserving destructuring for Solid and Ripple
+* `&` lazy destructuring: reactivity-preserving destructuring for Solid, Vue, and Ripple
 
 ---
 
@@ -896,7 +896,7 @@ The `.paragraph` class is available through the module-scope `classes` map. To s
 
 # 6. Fine-Grained Reactive Framework Feature: Lazy Destructuring (`&`)
 
-For fine-grained reactive framework targets such as **Solid** and **Ripple**, destructuring properties immediately can break the tracking graph by reading primitive accessor values too early.
+For fine-grained reactive framework targets such as **Solid**, **Vue**, and **Ripple**, destructuring properties immediately can break the tracking graph by reading primitive accessor values too early.
 
 TSRX introduces **lazy destructuring**, denoted by the `&` modifier prefix.
 
@@ -938,7 +938,7 @@ Lazy destructuring compiles to target-specific reactive property access that pre
 
 ### Constraints
 
-* Lazy destructuring is relevant to fine-grained reactive targets such as Solid and Ripple.
+* Lazy destructuring is relevant to fine-grained reactive targets such as Solid, Vue, and Ripple.
 * It is not required for targets whose reactivity model is not affected by eager destructuring.
 * The emitted implementation depends on the selected compiler target.
 
