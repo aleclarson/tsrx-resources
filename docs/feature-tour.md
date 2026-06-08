@@ -58,6 +58,7 @@ The final statement may be:
 ### Core Rules
 
 * A TSRX template may contain local JavaScript statements before its final JSX-producing statement.
+* `return` statements are allowed only in the top-level `@{ ... }` block that serves as a function body; all other TSRX templates and control-flow blocks produce their result from the final JSX-producing statement.
 * The final statement must produce JSX.
 * Naked text strings or lone JavaScript expressions in the final position must be wrapped in a JSX fragment, such as `<>Text</>`.
 * A TSRX template does not need to be wrapped in curly braces when nested inside JSX layout.
@@ -504,7 +505,8 @@ Statement containers are valid inside JSX layout.
 ### Constraints
 
 * A statement container creates a local JavaScript scope.
-* It may contain local declarations and other JavaScript statements.
+* It may contain local declarations and JavaScript statements.
+* `return` statements are not allowed; use the final JSX-producing statement as the container result.
 * Its final statement must produce JSX.
 * Naked text strings or lone expressions in the final position must be wrapped in a fragment.
 
@@ -583,6 +585,7 @@ Function body templates are valid as:
 
 * The final statement must produce JSX.
 * Early `return` statements may still be used.
+* Function body templates are the only TSRX `@{ ... }` form where `return` statements are allowed.
 * Local JavaScript statements may appear before the final JSX-producing statement.
 
 ### Traditional JSX
