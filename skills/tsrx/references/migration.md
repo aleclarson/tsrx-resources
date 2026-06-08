@@ -1,26 +1,34 @@
-# Migrating from legacy `tsrx-preact`
+# Legacy TSRX migration
 
-Legacy `tsrx-preact` was a Preact-specific statement-template language. Current TSRX is TypeScript + JSX with opt-in `@` templates and multiple compiler targets.
+This guide lists legacy TSRX syntax that changed or was removed in current TSRX.
 
 ## Quick map
 
-| Legacy syntax | Current syntax |
+| Legacy | Current |
 | --- | --- |
 | `component Name(props) { ... }` | `function Name(props) @{ ... }` |
 | `const Name = component (...) => { ... }` | `const Name = (...) => @{ ... }` |
-| JSX statements throughout component bodies | Standard JSX plus `@{ ... }` statement containers |
-| `"Text"` text nodes | Standard JSX text: `Text` |
-| `<tsrx>...</tsrx>` expression wrapper | Ordinary JSX, or `@{ ... }` for local statements/control flow |
-| `if (...) { ... } else { ... }` in templates | `@if (...) { ... } @else { ... }` |
-| `for (... of ...; index i; key expr)` | `@for (... of ...; index i; key expr)` |
-| Empty-list handling around loops | `@for (...) { ... } @empty { ... }` |
-| `switch` / `case` / `default` / `break` | `@switch` / `@case:` / `@default:` with selected-branch output |
+| Statement-position JSX throughout templates | Standard JSX plus explicit `@` templates |
+| Multiple top-level JSX statements | One final JSX-producing statement, usually a fragment |
+| Local JS directly inside JSX children | `@{ ... }` statement containers or `@` control blocks |
+| Direct text child `"Text"` | Standard JSX text `Text` |
+| `<tsrx>...</tsrx>` expression island | `@{ ... }` expression template |
+| `<tsx>...</tsx>` expression island | Ordinary JSX or `<>...</>` |
+| Required `<>...</>` wrapper for expression-position UI | Ordinary JSX; fragments only for siblings |
+| `if` / `else if` / `else` | `@if` / `@else if` / `@else` |
+| `for (... of ...; index i; key id)` | `@for (... of ...; index i; key id)` |
+| Manual empty-list branch around loops | `@for (...) { ... } @empty { ... }` |
+| `switch` / `case` / `default` / `break` | `@switch` / `@case:` / `@default:` |
 | `try` / `pending` / `catch` | `@try` / `@pending` / `@catch` |
-| Bare guard `return;` after rendered fallback | `return <Fallback />` or `return null` in top-level `@{ ... }` function bodies |
+| Guard fallback + bare `return;` | `return <Fallback />` or `return null` in top-level function `@{}` |
+| `{text expr}` | Removed from TSRX |
+| `{html expr}` | Removed from TSRX |
+| `{style "className"}` | Removed from TSRX |
+| `{ref expr}` and named `ref` props | Removed from TSRX |
 
-## Component shape
+## Components
 
-Legacy components used the `component` keyword and statement-position JSX:
+Legacy:
 
 ```tsrx
 export component Button({ label }: { label: string }) {
@@ -28,7 +36,7 @@ export component Button({ label }: { label: string }) {
 }
 ```
 
-Current components use normal function or arrow declarations with an `@{ ... }` body:
+Current:
 
 ```tsx
 export function Button({ label }: { label: string }) @{
@@ -40,68 +48,70 @@ const Button = ({ label }: { label: string }) => @{
 }
 ```
 
-The top-level function body may use early `return`; otherwise its final JSX-producing statement is the component output.
+Current component bodies use `@{ ... }`. The output is the final JSX-producing statement unless a top-level `return` exits earlier.
 
-## Text and local statements
+## JSX, text, and local statements
 
-Legacy static text used quoted text nodes:
-
-```tsrx
-<p>"Hello, "{name}"!"</p>
-```
-
-Current TSRX keeps JSX text rules:
-
-```tsx
-<p>Hello, {name}!</p>
-```
-
-Legacy element bodies could contain local declarations directly:
+Legacy TSRX treated JSX as statements and allowed local JavaScript directly inside element children:
 
 ```tsrx
 <div>
   const greeting = `Hello, ${name}`;
-  <p>{greeting}</p>
+  <p>"Greeting: "{greeting}</p>
 </div>
 ```
 
-Current JSX child positions use statement containers or `@` control blocks:
+Current TSRX keeps JSX text and expression rules. Use `@{ ... }` for local statements inside layout:
 
 ```tsx
 <div>
   @{
     const greeting = `Hello, ${name}`;
-    <p>{greeting}</p>
+    <p>Greeting: {greeting}</p>
   }
 </div>
 ```
 
-## Expression-position markup
+Top-level component output now comes from one final JSX-producing statement. Wrap sibling outputs in a fragment:
 
-Legacy used `<tsrx>` when markup appeared in assignment, helper returns, prop values, or render props:
+```tsx
+function Card() @{
+  <>
+    <section>Content</section>
+    <style>
+      section { padding: 1rem; }
+    </style>
+  </>
+}
+```
+
+## Expression-position UI
+
+Legacy expression islands:
 
 ```tsrx
-const title = <tsrx><span>"Settings"</span></tsrx>;
+const title = <tsrx>
+  const label = name.toUpperCase();
+  <span>"Title: "{label}</span>
+</tsrx>;
+
+const body = <tsx><p>Body</p></tsx>;
 ```
 
-Current code can use ordinary JSX for plain markup:
+Current TSRX uses ordinary JSX for plain expression values and `@{ ... }` when statements are needed:
 
 ```tsx
-const title = <span>Settings</span>;
-```
+const body = <p>Body</p>;
 
-Use `@{ ... }` in expression position when the value needs local statements or TSRX control flow:
-
-```tsx
 const title = @{
-  const label = section.name.toUpperCase();
-  <span>{label}</span>
+  const label = name.toUpperCase();
+  <span>Title: {label}</span>
 };
 ```
 
 ## Control flow
 
-Current template control flow is explicitly prefixed with `@`.
+Legacy template control flow used JavaScript statement spelling. Current TSRX prefixes JSX-producing control flow with `@`.
 
 ```tsx
 @if (status === 'loading') {
@@ -119,8 +129,10 @@ Current template control flow is explicitly prefixed with `@`.
 }
 ```
 
+`@for` bodies produce one JSX result per iteration. Legacy loop bodies allowed item skips with `continue`; current `@for` bodies exclude both `continue` and `break`.
+
 ```tsx
-@switch (type) {
+@switch (kind) {
   @case 'warning':
   @case 'error': {
     <Alert />
@@ -130,6 +142,8 @@ Current template control flow is explicitly prefixed with `@`.
   }
 }
 ```
+
+Legacy switch fallthrough changed to stacked `@case` labels sharing a block. `break` is omitted.
 
 ```tsx
 @try {
@@ -141,11 +155,9 @@ Current template control flow is explicitly prefixed with `@`.
 }
 ```
 
-Each branch/body may run local JavaScript statements, then finishes with JSX. `@for` bodies exclude `break` and `continue`; `@switch` branches use selected output with `break` omitted.
+## Early returns
 
-## Guards and hooks
-
-Legacy guard clauses rendered fallback JSX, then used bare `return;`:
+Legacy guards rendered fallback UI, then exited with bare `return;`:
 
 ```tsrx
 component Dashboard({ user }: { user: User | null }) {
@@ -158,7 +170,7 @@ component Dashboard({ user }: { user: User | null }) {
 }
 ```
 
-Current top-level TSRX function bodies can return fallback output directly:
+Current top-level function `@{ ... }` bodies can return fallback values directly:
 
 ```tsx
 function Dashboard({ user }: { user: User | null }) @{
@@ -167,31 +179,19 @@ function Dashboard({ user }: { user: User | null }) @{
 }
 ```
 
-Current TSRX also supports compiler-extracted conditional hooks in conditionals, loops, switches, and paths after early returns when the branch is statically extractable.
+Other TSRX templates and control-flow blocks produce output from their final JSX-producing statement.
 
-## Styling and reactivity additions
+## Removed directives and refs
 
-Current TSRX adds native CSS and lazy destructuring:
+The legacy child directives `{text expr}` and `{html expr}` were removed from TSRX. Migrate text and raw HTML behavior to the selected target/runtime APIs.
 
-```tsx
-const styles = <style>
-  .card { border: 1px solid #ccc; }
-</style>;
+The legacy scoped-style composition directive `{style "className"}` was removed from TSRX. Migrate cross-component class passing to ordinary class/className props or another target-specific styling pattern.
 
-<div className={styles.card} />
+The legacy TSRX ref forms were removed from TSRX:
+
+```tsrx
+<input {ref input} />
+<Field inputRef={ref input} />
 ```
 
-```tsx
-function UserCard(&{ user, theme }) @{
-  <article className={theme}>{user.name}</article>
-}
-```
-
-JSX-child `<style>` blocks are scoped CSS. Variable-initializer `<style>` blocks create typed class maps. `&` destructuring preserves fine-grained reactivity for Solid, Vue, and Ripple targets.
-
-## Mostly unchanged
-
-- TypeScript imports, types, generics, and expressions keep TypeScript semantics.
-- JSX elements, fragments, expression containers, and children keep JSX semantics.
-- Attribute shorthand remains available: `<Input {value} {onInput} />`.
-- Preact remains a supported target; TSRX is now target-agnostic across React, Preact, Solid, Vue, and Ripple.
+Use the selected target's normal ref API instead.
