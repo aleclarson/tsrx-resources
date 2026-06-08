@@ -705,7 +705,7 @@ This is the one explicit exception to TSRX’s strict superset rule: standard JS
 <style>{`color: red`}</style>
 ```
 
-TSRX supports scoped `<style>` blocks in JSX layout and class-map `<style>` expressions assigned to variables. At module scope, `<style>` is supported only through a variable declaration; an unassigned module-root `<style>` tag is not valid TSRX.
+TSRX supports two `<style>` forms: scoped blocks in JSX layout and variable-declared class maps. At module scope, `<style>` is supported only through a variable declaration; an unassigned module-root `<style>` tag is not valid TSRX.
 
 ---
 
@@ -751,15 +751,17 @@ The `h1` and `div` selectors are scoped to the component layout where the style 
 
 ---
 
-## B. `<style>` as a JSX Expression
+## B. `<style>` as a Variable-Declared Class Map
 
-When a `<style>` block is assigned directly to a JavaScript variable as an expression, it compiles to a type-safe `Record<string, string>` containing mappings to generated, scoped class names.
+When a `<style>` block is used as the initializer of a JavaScript variable declaration, it compiles to a type-safe `Record<string, string>` containing mappings to generated, scoped class names.
+
+The variable declaration may appear inside a component or at module scope. Module-scope declarations use the same class-map behavior and can be referenced by multiple components in the file.
 
 In this mode, only class selectors are permitted.
 
 ### Position
 
-Assigned directly to a JavaScript variable.
+Initializer of a JavaScript variable declaration, either in local scope or module root scope.
 
 ### Selectors Allowed
 
@@ -767,7 +769,7 @@ Assigned directly to a JavaScript variable.
 
 ### Output Shape
 
-The compiler produces a class-name mapping object.
+The compiler extracts the CSS and initializes the variable with a class-name mapping object.
 
 ```tsx
 const classes = <style>
@@ -784,11 +786,12 @@ Record<string, string>
 
 ### Constraints
 
-* Semantic tag selectors are not permitted in expression style blocks.
+* Semantic tag selectors are not permitted in variable-declared style blocks.
 * Class references are type-safe.
 * Accessing an undefined class name is invalid.
+* A bare module-root `<style>...</style>` block is not valid TSRX.
 
-### Example
+### Local Example
 
 ```tsx
 function CustomCard() @{
@@ -805,27 +808,7 @@ function CustomCard() @{
 
 The style block defines a scoped class map that can be consumed directly from TypeScript.
 
----
-
-## C. `<style>` in Module Scope
-
-At module scope, TSRX supports `<style>` only as the initializer of a variable declaration. A bare module-root `<style>...</style>` block is not valid TSRX.
-
-Module-scope style variables use the same class-map behavior as expression style blocks and are useful when multiple components in the file need to share generated class names.
-
-### Position
-
-Assigned directly to a JavaScript variable at module root scope.
-
-### Selectors Allowed
-
-* Class selectors only
-
-### Output Shape
-
-The compiler extracts the CSS and initializes the variable with a class-name mapping object that can be referenced by any component in the module.
-
-### Example
+### Module-Scope Example
 
 ```tsx
 const classes = <style>
@@ -1004,7 +987,7 @@ function Component(props) @{
 
 Used for JSX-producing component bodies without a final explicit `return`.
 
-## Expression Style Block
+## Variable-Declared Style Block
 
 ```tsx
 const classes = <style>
@@ -1012,7 +995,7 @@ const classes = <style>
 </style>;
 ```
 
-Used for scoped, type-safe CSS class maps.
+Used for scoped, type-safe CSS class maps in local or module scope.
 
 ## JSX Attribute Shorthand
 
