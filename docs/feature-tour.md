@@ -19,6 +19,7 @@ TSRX introduces the following syntax-level features:
 * `@try`: async and error boundary syntax
 * `@{ ... }`: inline statement containers
 * Function body `@{ ... }`: JSX-producing component bodies
+* JavaScript comments in JSX: `//` and `/* ... */` without expression containers
 * Conditional hooks: compile-time hook-safe extraction
 * Native `<style>` blocks: scoped CSS and class-map generation
 * `&` lazy destructuring: reactivity-preserving destructuring for Solid and Ripple
@@ -56,6 +57,21 @@ The final statement may be:
 * The final statement must produce JSX.
 * Naked text strings or lone JavaScript expressions in the final position must be wrapped in a JSX fragment, such as `<>Text</>`.
 * A TSRX template does not need to be wrapped in curly braces when nested inside JSX layout.
+* Standard JavaScript line and block comments may be written directly inside JSX templates without a JSX expression container.
+
+### JavaScript Comments in JSX
+
+TSRX supports normal JavaScript comment syntax inside JSX templates. Both `//` and `/* ... */` comments can appear directly in JSX layout without being wrapped in `{...}`.
+
+```tsx
+<div>
+  // Render the primary action first
+  <PrimaryAction />
+
+  /* Secondary actions stay grouped below */
+  <SecondaryActions />
+</div>
+```
 
 ### Valid Positions
 
