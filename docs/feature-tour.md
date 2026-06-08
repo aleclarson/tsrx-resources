@@ -768,7 +768,7 @@ At compile time, CSS is extracted into an external asset layout that modern bund
 This is the one explicit exception to TSRX’s strict superset rule: standard JSX syntax such as the following is invalid in a `.tsrx` file:
 
 ```tsx
-<style>{`color: red`}</style>
+<style>{`h1 { color: red; }`}</style>
 ```
 
 TSRX supports two `<style>` forms: scoped blocks in JSX layout and variable-declared class maps. At module scope, `<style>` is supported only through a variable declaration; an unassigned module-root `<style>` tag is not valid TSRX.
