@@ -1,13 +1,8 @@
 # Introducing TSRX
 
-TSRX is a strict, compiler-agnostic superset of JSX and TypeScript with official support for **React, Preact, Solid, Vue, and Ripple** compiler targets. It introduces dedicated syntax for control flow, inline blocks, component architecture, framework-aware hooks, and native styling without altering existing JavaScript or JSX semantics.
-
-With one explicit exception regarding standard `<style>` tags, every feature introduced by TSRX is entirely optional. Valid JSX and TypeScript code remains valid when pasted directly into a `.tsrx` file.
+TSRX is a compiler-agnostic TypeScript language extension for JSX-shaped UI templates with official support for **React, Preact, Solid, Vue, and Ripple** compiler targets. It introduces dedicated syntax for control flow, inline blocks, component architecture, framework-aware hooks, and native styling.
 
 A core philosophical pillar of TSRX is **locality**: layout structures, styling, and their direct data or logic dependencies should live as close to each other as possible. TSRX is designed with deliberate architectural restraint to prevent this locality from turning into spaghetti code. The creators of TSRX explicitly recommend splitting deeply nested structures into dedicated child components to keep complexity manageable.
-
-> [!NOTE]
-> This compatibility claim applies to JSX and TypeScript syntax, not necessarily to literal JSX text that contains TSRX syntax markers. For example, text containing `@if` may be parsed as TSRX control-flow syntax instead of being rendered as text, which can change behavior or produce a compiler error. Use an explicit JSX string expression, such as `{'@if'}`, when TSRX syntax should appear as literal text.
 
 ---
 
@@ -27,6 +22,19 @@ TSRX introduces the following syntax-level features:
 * Conditional hooks: compile-time hook-safe extraction
 * Native `<style>` blocks: scoped CSS and class-map generation
 * `&` lazy destructuring: reactivity-preserving destructuring for Solid, Vue, and Ripple
+
+---
+
+## Compatibility with JSX and TypeScript
+
+TSRX is designed as a strict superset of JSX and TypeScript syntax, subject to the `<style>` exception below. Existing imports, types, JavaScript statements and expressions, JSX elements, JSX fragments, JSX text, and JSX expression containers keep their standard meanings in `.tsrx` files unless TSRX-specific syntax is used.
+
+Outside that exception, TSRX features are opt-in. Syntax such as `@if`, `@for`, `@{ ... }`, `<style>...</style>`, and `&{ ... }` adds capabilities without changing ordinary JavaScript or TypeScript semantics.
+
+There are two important boundaries:
+
+* Native `<style>` blocks are parsed as CSS, not JSX children. Standard JSX style-string syntax such as ``<style>{`h1 { color: red; }`}</style>`` is not valid in `.tsrx`; write CSS directly inside `<style>` instead.
+* The compatibility claim applies to JSX and TypeScript syntax, not necessarily to literal JSX text that contains TSRX syntax markers. For example, text containing `@if` may be parsed as TSRX control-flow syntax instead of being rendered as text. Use an explicit JSX string expression, such as `{'@if'}`, when TSRX syntax should appear as literal text.
 
 ---
 
