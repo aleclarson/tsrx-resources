@@ -33,7 +33,20 @@ Outside that exception, TSRX features are opt-in. Syntax such as `@if`, `@for`, 
 
 There are two important boundaries:
 
-* Native `<style>` blocks are parsed as CSS, not JSX children. Standard JSX style-string syntax such as ``<style>{`h1 { color: red; }`}</style>`` is not valid in `.tsrx`; write CSS directly inside `<style>` instead.
+* Native `<style>` blocks are parsed as CSS, not JSX children. Write CSS directly inside the block:
+
+  ```tsx
+  <style>
+    h1 { color: red; }
+  </style>
+  ```
+
+  Standard JSX style-string children are outside TSRX’s native `<style>` form:
+
+  ```tsx
+  <style>{`h1 { color: red; }`}</style>
+  ```
+
 * The compatibility claim applies to JSX and TypeScript syntax, not necessarily to literal JSX text that contains TSRX syntax markers. For example, text containing `@if` may be parsed as TSRX control-flow syntax instead of being rendered as text. Use an explicit JSX string expression, such as `{'@if'}`, when TSRX syntax should appear as literal text.
 
 ---
@@ -888,7 +901,15 @@ The `.paragraph` class is available through the module-scope `styles` map. To st
 * TSRX’s native CSS parsing is the one explicit exception to its strict superset rule: a `<style>` block contains CSS source directly.
 * The variable-declared class-map form is the module-scope style form.
 * Use `:global(...)` when a selector should intentionally target global or external markup instead of receiving TSRX’s generated scoping.
-* `<style>` contents are static CSS. For runtime-dependent values, set CSS custom properties on JSX elements, such as `style={{ '--box-color': color }}`, and read them from CSS with `var(--box-color)`.
+* `<style>` contents are static CSS. For runtime-dependent values, set CSS custom properties on JSX elements and read them from CSS:
+
+  ```tsx
+  <div className="box" style={{ '--box-color': color }}>
+    <style>
+      .box { color: var(--box-color); }
+    </style>
+  </div>
+  ```
 
 ---
 
