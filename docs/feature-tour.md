@@ -659,6 +659,40 @@ function ProjectSummary({ projects }: { projects: Project[] }) @{
 
 The function body remains statement-oriented while allowing nested TSRX scopes, such as `@for`, `@if`, and local declarations, to stay directly inside the JSX layout they support.
 
+### Reactive Guard Clauses in Fine-Grained Targets
+
+In fine-grained reactive targets such as Solid and Ripple, ordinary JavaScript guard clauses inside components can be non-reactive because the component function may execute only once.
+
+```tsx
+function Component(props) {
+  if (props.disabled) return null;
+  return <div />;
+}
+```
+
+A TSRX function body can preserve the guard-clause authoring style while compiling to target-native reactive control flow.
+
+```tsx
+function Component(props) @{
+  if (props.disabled) return null;
+  <div />
+}
+```
+
+For a Solid target, the generated code may use a reactive control-flow primitive such as `<Show>`:
+
+```tsx
+function Component(props) {
+  return (
+    <Show when={props.disabled} fallback={<div />}>
+      {null}
+    </Show>
+  );
+}
+```
+
+Changes to `props.disabled` can therefore continue to update the rendered output even though the source uses an ordinary-looking guard clause.
+
 ---
 
 # 4. Conditional Hooks
