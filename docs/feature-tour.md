@@ -919,10 +919,11 @@ For fine-grained reactive framework targets such as **Solid**, **Vue**, and **Ri
 
 TSRX introduces **lazy destructuring**, denoted by the `&` modifier prefix.
 
-Lazy destructuring uses standard destructuring syntax with an added `&` marker:
+Lazy destructuring uses standard object and array destructuring syntax with an added `&` marker:
 
 ```tsx
 const &{ property } = object;
+const &[first, second] = tuple;
 ```
 
 ### Syntax
@@ -953,6 +954,8 @@ Lazy destructuring is permitted anywhere standard object or array destructuring 
 
 Lazy destructuring compiles to target-specific reactive property or index access that preserves tracking behavior. The compiler defers access tracking under the hood so object and array destructuring can remain ergonomic without eagerly reading reactive values.
 
+Object patterns may destructure getter-backed properties. Object rest preserves property descriptors, so getter-backed properties that flow into a `...rest` object remain getter-backed instead of becoming eager value copies.
+
 ### Constraints
 
 * Lazy destructuring is relevant to fine-grained reactive targets such as Solid, Vue, and Ripple.
@@ -980,6 +983,26 @@ function TaskManager(props) @{
   const &{ currentTask, priority } = state.todo;
 
   <div>Task: {currentTask} ({priority})</div>
+}
+```
+
+Getter-backed properties and object rest work with the same syntax. In this example, `displayName` may be a getter, and any getter properties collected into `details` keep their descriptors.
+
+```tsx
+function UserCard(source) @{
+  const &{ displayName, ...details } = source;
+
+  <article title={details.title}>{displayName}</article>
+}
+```
+
+Lazy destructuring also works with array patterns.
+
+```tsx
+function Counter(props) @{
+  const &[count, setCount] = props.counter;
+
+  <button onClick={() => setCount(count + 1)}>Count: {count}</button>
 }
 ```
 
