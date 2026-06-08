@@ -1,6 +1,6 @@
 # Introducing TSRX
 
-TSRX is a compiler-agnostic TypeScript language extension for JSX-shaped UI templates with official support for **React, Preact, Solid, Vue, and Ripple** compiler targets. It introduces dedicated syntax for control flow, inline blocks, component architecture, framework-aware hooks, and native styling.
+TSRX is a compiler-agnostic TypeScript language extension for JSX-shaped UI templates with official support for **React, Preact, Solid, Vue, and Ripple** compiler targets. You can think of it as “JSX 2.0”: the same TypeScript-and-markup mental model, extended with first-class control flow, local statements, framework-aware hooks, and native styling.
 
 A core philosophical pillar of TSRX is **locality**: layout structures, styling, and their direct data or logic dependencies should live as close to each other as possible. TSRX is designed with deliberate architectural restraint to prevent this locality from turning into spaghetti code. The creators of TSRX explicitly recommend splitting deeply nested structures into dedicated child components to keep complexity manageable.
 
