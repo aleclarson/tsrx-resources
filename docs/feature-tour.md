@@ -885,13 +885,10 @@ The `.paragraph` class is available through the module-scope `styles` map. To st
 
 ## Constraints and Escape Hatches
 
-TSRX’s native CSS parsing is the one explicit exception to its strict superset rule: a `<style>` block contains CSS source directly.
-
-Use the variable-declared class-map form for module-scope styles.
-
-Use `:global(...)` when a selector should intentionally target global or external markup instead of receiving TSRX’s generated scoping.
-
-`<style>` contents are static CSS. For runtime-dependent values, set CSS custom properties on JSX elements, such as `style={{ '--box-color': color }}`, and read them from CSS with `var(--box-color)`.
+* TSRX’s native CSS parsing is the one explicit exception to its strict superset rule: a `<style>` block contains CSS source directly.
+* The variable-declared class-map form is the module-scope style form.
+* Use `:global(...)` when a selector should intentionally target global or external markup instead of receiving TSRX’s generated scoping.
+* `<style>` contents are static CSS. For runtime-dependent values, set CSS custom properties on JSX elements, such as `style={{ '--box-color': color }}`, and read them from CSS with `var(--box-color)`.
 
 ---
 
