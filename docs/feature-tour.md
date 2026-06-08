@@ -1,4 +1,4 @@
-# Introducing TSRX: A Syntax-Level Extension for TypeScript and JSX
+# Introducing TSRX
 
 TSRX is a strict, compiler-agnostic superset of JSX and TypeScript with official support for **React, Preact, Solid, Vue, and Ripple** compiler targets. It introduces dedicated syntax for control flow, inline blocks, component architecture, framework-aware hooks, and native styling without altering existing JavaScript or JSX semantics.
 
