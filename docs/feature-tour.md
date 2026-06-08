@@ -773,6 +773,10 @@ This is the one explicit exception to TSRX’s strict superset rule: standard JS
 
 TSRX supports two `<style>` forms: scoped blocks in JSX layout and variable-declared class maps. At module scope, `<style>` is supported only through a variable declaration; an unassigned module-root `<style>` tag is not valid TSRX.
 
+Scoped CSS may use `:global(...)` as an escape hatch for selectors that intentionally target global or external markup instead of receiving TSRX’s generated scoping.
+
+`<style>` contents are static CSS. For runtime-dependent values, set CSS custom properties on JSX elements, such as `style={{ '--box-color': color }}`, and read them from CSS with `var(--box-color)` instead of interpolating JavaScript inside `<style>` blocks.
+
 ---
 
 ## A. `<style>` as a JSX Child
@@ -790,6 +794,7 @@ Direct child inside JSX layout.
 * Semantic tag selectors
 * Class selectors
 * Other valid scoped CSS selectors
+* `:global(...)` escape selectors for intentionally global rules
 
 ### Output Shape
 
