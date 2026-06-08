@@ -4,10 +4,10 @@ TSRX is a strict, compiler-agnostic superset of JSX and TypeScript with official
 
 With one explicit exception regarding standard `<style>` tags, every feature introduced by TSRX is entirely optional. Valid JSX and TypeScript code remains valid when pasted directly into a `.tsrx` file.
 
+A core philosophical pillar of TSRX is **locality**: layout structures, styling, and their direct data or logic dependencies should live as close to each other as possible. TSRX is designed with deliberate architectural restraint to prevent this locality from turning into spaghetti code. The creators of TSRX explicitly recommend splitting deeply nested structures into dedicated child components to keep complexity manageable.
+
 > [!NOTE]
 > This compatibility claim applies to JSX and TypeScript syntax, not necessarily to literal JSX text that contains TSRX syntax markers. For example, text containing `@if` may be parsed as TSRX control-flow syntax instead of being rendered as text, which can change behavior or produce a compiler error. Use an explicit JSX string expression, such as `{'@if'}`, when TSRX syntax should appear as literal text.
-
-A core philosophical pillar of TSRX is **locality**: layout structures, styling, and their direct data or logic dependencies should live as close to each other as possible. TSRX is designed with deliberate architectural restraint to prevent this locality from turning into spaghetti code. The creators of TSRX explicitly recommend splitting deeply nested structures into dedicated child components to keep complexity manageable.
 
 ---
 
@@ -557,8 +557,6 @@ TSRX extends its template block syntax directly to component declarations.
 
 Function declarations and arrow functions may use the `@{ ... }` body form, allowing the final JSX-producing statement to serve as the component output without an explicit base-level `return`.
 
-Early exit `return` statements remain valid when needed.
-
 ### Syntax
 
 ```tsx
@@ -589,7 +587,7 @@ Function body templates are valid as:
 ### Constraints
 
 * The final statement must produce JSX.
-* Early `return` statements may still be used.
+* Early exit `return` statements may still be used in top-level TSRX function bodies.
 * Function body templates are the only TSRX `@{ ... }` form where `return` statements are allowed.
 * Local JavaScript statements may appear before the final JSX-producing statement.
 
@@ -701,8 +699,6 @@ In standard JSX architecture, hooks are bound by strict framework rules. In Reac
 
 TSRX relaxes the authoring limitation while preserving hook safety through static compilation.
 
-When a hook appears inside a conditional branch, loop branch, switch branch, or after an early return, TSRX extracts the hook-containing render path into an internal component so the generated target code preserves the hook rules of the target framework.
-
 ### Supported Positions
 
 Hooks may be authored inside:
@@ -715,7 +711,9 @@ Hooks may be authored inside:
 
 ### Output Shape
 
-Conditional hook usage compiles into generated component boundaries that preserve hook ordering and scoping rules for the target framework.
+When a hook appears inside a conditional branch, loop branch, switch branch, or after an early return, TSRX can extract the hook-containing render path into an internal component.
+
+The generated boundary preserves hook ordering and scoping rules for the target framework.
 
 ### Constraints
 
@@ -763,19 +761,9 @@ The hook can be authored in the same local render path where its data is consume
 
 TSRX natively parses standard CSS syntax inside `<style>` tags without requiring styles to be wrapped in JavaScript strings.
 
-At compile time, CSS is extracted into an external asset layout that modern bundlers can process.
+At compile time, CSS is extracted into external assets that modern bundlers can process. The compiler can scope selectors to a template or generate class maps for use from TypeScript.
 
-This is the one explicit exception to TSRX’s strict superset rule: standard JSX syntax such as the following is invalid in a `.tsrx` file:
-
-```tsx
-<style>{`h1 { color: red; }`}</style>
-```
-
-TSRX supports two `<style>` forms: scoped blocks in JSX layout and variable-declared class maps. At module scope, `<style>` is supported only through a variable declaration; an unassigned module-root `<style>` tag is not valid TSRX.
-
-Scoped CSS may use `:global(...)` as an escape hatch for selectors that intentionally target global or external markup instead of receiving TSRX’s generated scoping.
-
-`<style>` contents are static CSS. For runtime-dependent values, set CSS custom properties on JSX elements, such as `style={{ '--box-color': color }}`, and read them from CSS with `var(--box-color)` instead of interpolating JavaScript inside `<style>` blocks.
+TSRX supports two `<style>` forms: scoped blocks in JSX layout and variable-declared class maps.
 
 ---
 
@@ -794,7 +782,6 @@ Direct child inside JSX layout.
 * Semantic tag selectors
 * Class selectors
 * Other valid scoped CSS selectors
-* `:global(...)` escape selectors for intentionally global rules
 
 ### Output Shape
 
@@ -860,7 +847,6 @@ Record<string, string>
 * Semantic tag selectors are not permitted in variable-declared style blocks.
 * Class references are type-safe.
 * Accessing an undefined class name is invalid.
-* A bare module-root `<style>...</style>` block is not valid TSRX.
 
 ### Local Example
 
@@ -894,6 +880,22 @@ The `.paragraph` class is available through the module-scope `classes` map. To s
 
 ---
 
+## Constraints and Escape Hatches
+
+TSRX’s native CSS parsing is the one explicit exception to its strict superset rule. Standard JSX style-string children are invalid in a `.tsrx` file:
+
+```tsx
+<style>{`h1 { color: red; }`}</style>
+```
+
+At module scope, `<style>` is supported only through a variable declaration; an unassigned module-root `<style>` tag is not valid TSRX.
+
+Use `:global(...)` when a selector should intentionally target global or external markup instead of receiving TSRX’s generated scoping.
+
+`<style>` contents are static CSS. For runtime-dependent values, set CSS custom properties on JSX elements, such as `style={{ '--box-color': color }}`, and read them from CSS with `var(--box-color)` instead of interpolating JavaScript inside `<style>` blocks.
+
+---
+
 # 6. Fine-Grained Reactive Framework Feature: Lazy Destructuring (`&`)
 
 For fine-grained reactive framework targets such as **Solid**, **Vue**, and **Ripple**, destructuring properties immediately can break the tracking graph by reading primitive accessor values too early.
@@ -905,8 +907,6 @@ Lazy destructuring uses standard destructuring syntax with an added `&` marker:
 ```tsx
 const &{ property } = object;
 ```
-
-The compiler defers property access tracking under the hood so destructuring can preserve fine-grained reactivity.
 
 ### Syntax
 
@@ -934,7 +934,7 @@ Lazy destructuring is permitted anywhere standard object or array destructuring 
 
 ### Output Shape
 
-Lazy destructuring compiles to target-specific reactive property access that preserves tracking behavior.
+Lazy destructuring compiles to target-specific reactive property or index access that preserves tracking behavior. The compiler defers access tracking under the hood so object and array destructuring can remain ergonomic without eagerly reading reactive values.
 
 ### Constraints
 
@@ -945,7 +945,7 @@ Lazy destructuring compiles to target-specific reactive property access that pre
 ### Example
 
 ```tsx
-// Destructuring props lazily in Solid or Ripple without losing reactivity
+// Destructuring props lazily in Solid, Vue, or Ripple without losing reactivity
 function ReactiveComponent(&{ user, theme }) @{
   <div>
     <h1 className={theme}>{user.name}</h1>
