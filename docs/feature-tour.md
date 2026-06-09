@@ -719,24 +719,28 @@ In standard JSX architecture, hooks are bound by strict framework rules. In Reac
 
 TSRX relaxes the authoring limitation while preserving hook safety through static compilation.
 
+Conditional hooks are supported only inside a TSRX `@{ ... }` template context. That includes `@` control-flow blocks such as `@if`, `@for`, and `@switch` when those blocks appear within a component or template authored with `@{ ... }`.
+
 ### Supported Positions
 
 Hooks may be authored inside:
 
-* conditional branches
-* loop bodies
-* switch branches
-* render paths after early returns
-* TSRX templates that the compiler can safely isolate
+* `@if` / `@else if` / `@else` branches inside a `@{ ... }` template
+* `@for` loop bodies inside a `@{ ... }` template
+* `@switch` branches inside a `@{ ... }` template
+* render paths after early component returns, when the component body uses `@{ ... }`
+* nested TSRX templates that the compiler can safely isolate
 
 ### Output Shape
 
-When a hook appears inside a conditional branch, loop branch, switch branch, or after an early return, TSRX can extract the hook-containing render path into an internal component.
+When a hook appears inside a supported TSRX conditional branch, loop branch, switch branch, or after an early return in a TSRX function body, TSRX can extract the hook-containing render path into an internal component.
 
 The generated boundary preserves hook ordering and scoping rules for the target framework.
 
 ### Constraints
 
+* Conditional hooks must be authored inside a `@{ ... }` template context.
+* Ordinary JavaScript control flow in a non-TSRX function body does not opt into conditional hook support.
 * Conditional hook support depends on static compiler analysis.
 * Hook-containing branches must be extractable by the compiler.
 * The compiler preserves access to downstream JSX dependencies by handling captured scope variables during extraction.

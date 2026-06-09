@@ -122,7 +122,11 @@ Function declarations and arrow functions may use `@{ ... }` bodies. Top-level e
 
 ## Conditional Hooks
 
-Hooks may be authored inside conditionals, loops, switches, after early returns, and extractable TSRX templates. The compiler extracts hook-containing paths into target-safe internal components while preserving captured values.
+Conditional hooks are supported only inside a TSRX `@{ ... }` template context. This includes hooks inside `@if`, `@for`, and `@switch` control flow when that control flow appears within a `@{ ... }` component body or nested template.
+
+Early component returns also permit later hook calls on the remaining render path, provided the component body itself uses `@{ ... }`.
+
+Hooks in ordinary JavaScript conditionals, loops, switches, or early-return paths outside a TSRX template do not opt into this support. The compiler extracts supported hook-containing paths into target-safe internal components while preserving captured values.
 
 ## Native `<style>`
 
