@@ -435,6 +435,16 @@ Under the hood, `@pending` handles loading states, mapping to abstractions such 
 }
 ```
 
+`@pending` and `@catch` may also be declared as empty blocks. An empty block renders `null` automatically, and `@catch` may omit its parameter list when the error and reset values are not needed.
+
+```tsx
+@try {
+  <Content />
+} @pending {
+} @catch {
+}
+```
+
 ### Output Shape
 
 A `@try` block evaluates to one of three outputs:
@@ -459,7 +469,8 @@ It may also receive a `reset` function that triggers a retry of the `@try` block
 
 * `@pending` handles pending asynchronous rendering states.
 * `@catch` handles runtime errors from the protected render tree.
-* The main `@try`, `@pending`, and `@catch` blocks must each produce JSX.
+* The main `@try`, `@pending`, and `@catch` blocks must each produce JSX, except that empty `@pending {}` and `@catch {}` blocks render `null` automatically.
+* `@catch` may omit its parameter list when the thrown error and reset function are not needed.
 * The exact emitted boundary implementation depends on the selected compiler target.
 
 ### Traditional JSX
