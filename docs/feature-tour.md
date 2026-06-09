@@ -165,15 +165,15 @@ An `@if` block evaluates to the JSX output of exactly one matching branch.
 ### Traditional JSX
 
 ```tsx
-function UserProfile({ user, status }: Props) {
+function UserProfile(props: Props) {
   return (
     <div>
-      {status === 'loading' ? (
+      {props.status === 'loading' ? (
         <Spinner />
-      ) : status === 'error' ? (
+      ) : props.status === 'error' ? (
         <ErrorNotice />
-      ) : user ? (
-        <Card user={user} />
+      ) : props.user ? (
+        <Card user={props.user} />
       ) : (
         <NoData />
       )}
@@ -185,17 +185,17 @@ function UserProfile({ user, status }: Props) {
 ### TSRX Equivalent
 
 ```tsx
-function UserProfile({ user, status }: Props) @{
+function UserProfile(props: Props) @{
   <div>
-    @if (status === 'loading') {
+    @if (props.status === 'loading') {
       <Spinner />
-    } @else if (status === 'error') {
+    } @else if (props.status === 'error') {
       // Run localized logic directly inside the branch
       console.error("Profile load failed");
       const fallbackId = generateFallbackId();
       <ErrorNotice id={fallbackId} />
-    } @else if (user) {
-      <Card user={user} />
+    } @else if (props.user) {
+      <Card user={props.user} />
     } @else {
       <NoData />
     }
@@ -278,13 +278,13 @@ interface Item {
   vip: boolean;
 }
 
-function ItemList({ items }: { items: Item[] }) {
+function ItemList(props: { items: Item[] }) {
   return (
     <ul>
-      {items.length === 0 ? (
+      {props.items.length === 0 ? (
         <li>No items available</li>
       ) : (
-        items.map((item, i) => (
+        props.items.map((item, i) => (
           <li key={i}>
             {i + 1}. {item.vip ? <strong>{item.name}</strong> : item.name}
           </li>
@@ -298,9 +298,9 @@ function ItemList({ items }: { items: Item[] }) {
 ### TSRX Equivalent
 
 ```tsx
-function ItemList({ items }: { items: Item[] }) @{
+function ItemList(props: { items: Item[] }) @{
   <ul>
-    @for (const item of items; index i; key i) {
+    @for (const item of props.items; index i; key i) {
       <li>
         <> {i + 1}. </>
         @if (item.vip) {
@@ -373,11 +373,11 @@ If no case matches, the `@default` block is used when present.
 ### Traditional JSX
 
 ```tsx
-function Notification({ type }: { type: 'success' | 'warning' | 'error' | 'info' }) {
+function Notification(props: { type: 'success' | 'warning' | 'error' | 'info' }) {
   return (
     <div className="alert">
       {(() => {
-        switch (type) {
+        switch (props.type) {
           case 'success':
             return <SuccessIcon />;
           case 'warning':
@@ -395,9 +395,9 @@ function Notification({ type }: { type: 'success' | 'warning' | 'error' | 'info'
 ### TSRX Equivalent
 
 ```tsx
-function Notification({ type }: { type: 'success' | 'warning' | 'error' | 'info' }) @{
+function Notification(props: { type: 'success' | 'warning' | 'error' | 'info' }) @{
   <div className="alert">
-    @switch (type) {
+    @switch (props.type) {
       @case 'success': {
         <SuccessIcon />
       }
@@ -531,11 +531,11 @@ Statement containers are valid inside JSX layout.
 ### Traditional JSX
 
 ```tsx
-function PriceDisplay({ rawPrice, taxRate }: { rawPrice: number; taxRate: number }) {
+function PriceDisplay(props: { rawPrice: number; taxRate: number }) {
   return (
     <div className="price-tag">
       {(() => {
-        const total = rawPrice * (1 + taxRate);
+        const total = props.rawPrice * (1 + props.taxRate);
         const formatted = total.toFixed(2);
         return <span>${formatted}</span>;
       })()}
@@ -547,9 +547,9 @@ function PriceDisplay({ rawPrice, taxRate }: { rawPrice: number; taxRate: number
 ### TSRX Equivalent
 
 ```tsx
-function PriceDisplay({ rawPrice, taxRate }: { rawPrice: number; taxRate: number }) @{
+function PriceDisplay(props: { rawPrice: number; taxRate: number }) @{
   <div className="price-tag">@{
-    const total = rawPrice * (1 + taxRate);
+    const total = props.rawPrice * (1 + props.taxRate);
     const formatted = total.toFixed(2);
     <span>${formatted}</span>
   }</div>
@@ -603,13 +603,13 @@ Function body templates are valid as:
 ### Traditional JSX
 
 ```tsx
-function ProjectSummary({ projects }: { projects: Project[] }) {
+function ProjectSummary(props: { projects: Project[] }) {
   return (
     <div className="projects">
-      {projects.length === 0 ? (
+      {props.projects.length === 0 ? (
         <p>No projects available.</p>
       ) : (
-        projects.map((project) => {
+        props.projects.map((project) => {
           const openTasks = project.tasks.filter((task) => !task.done);
 
           return (
@@ -638,9 +638,9 @@ function ProjectSummary({ projects }: { projects: Project[] }) {
 ### TSRX Equivalent
 
 ```tsx
-function ProjectSummary({ projects }: { projects: Project[] }) @{
+function ProjectSummary(props: { projects: Project[] }) @{
   <div className="projects">
-    @for (const project of projects; key project.id) {
+    @for (const project of props.projects; key project.id) {
       const openTasks = project.tasks.filter((task) => !task.done);
 
       <section>
@@ -735,15 +735,15 @@ The generated boundary preserves hook ordering and scoping rules for the target 
 
 ```tsx
 // Hand-crafted separation required to satisfy hook constraints
-function StatusWrapper({ streamId }: { streamId: string | null }) {
-  if (!streamId) {
+function StatusWrapper(props: { streamId: string | null }) {
+  if (!props.streamId) {
     return <p>Disconnected</p>;
   }
-  return <ActiveStream streamId={streamId} />;
+  return <ActiveStream streamId={props.streamId} />;
 }
 
-function ActiveStream({ streamId }: { streamId: string }) {
-  const data = useSubscription(streamId);
+function ActiveStream(props: { streamId: string }) {
+  const data = useSubscription(props.streamId);
   return <div>Live: {data}</div>;
 }
 ```
@@ -751,13 +751,13 @@ function ActiveStream({ streamId }: { streamId: string }) {
 ### TSRX Equivalent
 
 ```tsx
-function StatusWrapper({ streamId }: { streamId: string | null }) @{
-  if (!streamId) {
+function StatusWrapper(props: { streamId: string | null }) @{
+  if (!props.streamId) {
     return <p>Disconnected</p>;
   }
 
   // Hook run conditionally after an early return
-  const data = useSubscription(streamId);
+  const data = useSubscription(props.streamId);
   <div>Live: {data}</div>
 }
 ```
@@ -917,14 +917,16 @@ const &[first, second] = tuple;
 ### Syntax
 
 ```tsx
-const &{ user, theme } = props;
+const &{ user, theme } = state;
 ```
 
-Lazy destructuring is also valid in component parameter position:
+Lazy destructuring can be used at the top of a component body when a target benefits from preserving reactive property access:
 
 ```tsx
-function ReactiveComponent(&{ user, theme }) @{
-  <div>{user.name}</div>
+function ReactiveComponent(props) @{
+  const state = getReactiveState(props.id);
+  const &{ user, theme } = state;
+  <div className={theme}>{user.name}</div>
 }
 ```
 
@@ -932,7 +934,6 @@ function ReactiveComponent(&{ user, theme }) @{
 
 Lazy destructuring is permitted anywhere standard object or array destructuring is allowed, including:
 
-* component parameters
 * local variable declarations
 * nested block scopes
 * object destructuring
@@ -953,8 +954,11 @@ Object patterns may destructure getter-backed properties. Object rest preserves 
 ### Object Destructuring Example
 
 ```tsx
-// Destructuring props lazily in Solid, Vue, or Ripple without losing reactivity
-function ReactiveComponent(&{ user, theme }) @{
+// Destructuring reactive state lazily in Solid, Vue, or Ripple without losing reactivity
+function ReactiveComponent(props) @{
+  const state = getReactiveState(props.id);
+  const &{ user, theme } = state;
+
   <div>
     <h1 className={theme}>{user.name}</h1>
   </div>
