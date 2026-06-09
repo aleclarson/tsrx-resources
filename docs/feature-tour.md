@@ -203,7 +203,7 @@ function UserProfile(props: Props) @{
 }
 ```
 
-The error branch can perform local setup before rendering its layout without requiring a nested IIFE or extracted component.
+In the error branch, setup code can live right next to the fallback UI that depends on it. There is no need to wrap the branch in a nested IIFE or move the fallback into a separate component just to declare a local value.
 
 ---
 
