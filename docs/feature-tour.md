@@ -185,23 +185,21 @@ function UserProfile({ user, status }: Props) {
 ### TSRX Equivalent
 
 ```tsx
-function UserProfile({ user, status }: Props) {
-  return (
-    <div>
-      @if (status === 'loading') {
-        <Spinner />
-      } @else if (status === 'error') {
-        // Run localized logic directly inside the branch
-        console.error("Profile load failed");
-        const fallbackId = generateFallbackId();
-        <ErrorNotice id={fallbackId} />
-      } @else if (user) {
-        <Card user={user} />
-      } @else {
-        <NoData />
-      }
-    </div>
-  );
+function UserProfile({ user, status }: Props) @{
+  <div>
+    @if (status === 'loading') {
+      <Spinner />
+    } @else if (status === 'error') {
+      // Run localized logic directly inside the branch
+      console.error("Profile load failed");
+      const fallbackId = generateFallbackId();
+      <ErrorNotice id={fallbackId} />
+    } @else if (user) {
+      <Card user={user} />
+    } @else {
+      <NoData />
+    }
+  </div>
 }
 ```
 
@@ -300,23 +298,21 @@ function ItemList({ items }: { items: Item[] }) {
 ### TSRX Equivalent
 
 ```tsx
-function ItemList({ items }: { items: Item[] }) {
-  return (
-    <ul>
-      @for (const item of items; index i; key i) {
-        <li>
-          <> {i + 1}. </>
-          @if (item.vip) {
-            <strong>{item.name}</strong>
-          } @else {
-            <>{item.name}</>
-          }
-        </li>
-      } @empty {
-        <li>No items available</li>
-      }
-    </ul>
-  );
+function ItemList({ items }: { items: Item[] }) @{
+  <ul>
+    @for (const item of items; index i; key i) {
+      <li>
+        <> {i + 1}. </>
+        @if (item.vip) {
+          <strong>{item.name}</strong>
+        } @else {
+          <>{item.name}</>
+        }
+      </li>
+    } @empty {
+      <li>No items available</li>
+    }
+  </ul>
 }
 ```
 
@@ -399,23 +395,21 @@ function Notification({ type }: { type: 'success' | 'warning' | 'error' | 'info'
 ### TSRX Equivalent
 
 ```tsx
-function Notification({ type }: { type: 'success' | 'warning' | 'error' | 'info' }) {
-  return (
-    <div className="alert">
-      @switch (type) {
-        @case 'success': {
-          <SuccessIcon />
-        }
-        @case 'warning':
-        @case 'error': {
-          <AlertIcon />
-        }
-        @default: {
-          <InfoIcon />
-        }
+function Notification({ type }: { type: 'success' | 'warning' | 'error' | 'info' }) @{
+  <div className="alert">
+    @switch (type) {
+      @case 'success': {
+        <SuccessIcon />
       }
-    </div>
-  );
+      @case 'warning':
+      @case 'error': {
+        <AlertIcon />
+      }
+      @default: {
+        <InfoIcon />
+      }
+    }
+  </div>
 }
 ```
 
@@ -488,16 +482,14 @@ function Dashboard() {
 ### TSRX Equivalent
 
 ```tsx
-function Dashboard() {
-  return (
-    @try {
-      <DataGrid />
-    } @pending {
-      <Skeleton />
-    } @catch (error, reset) {
-      <ErrorWidget message={error.message} onRetry={reset} />
-    }
-  );
+function Dashboard() @{
+  @try {
+    <DataGrid />
+  } @pending {
+    <Skeleton />
+  } @catch (error, reset) {
+    <ErrorWidget message={error.message} onRetry={reset} />
+  }
 }
 ```
 
@@ -555,14 +547,12 @@ function PriceDisplay({ rawPrice, taxRate }: { rawPrice: number; taxRate: number
 ### TSRX Equivalent
 
 ```tsx
-function PriceDisplay({ rawPrice, taxRate }: { rawPrice: number; taxRate: number }) {
-  return (
-    <div className="price-tag">@{
-      const total = rawPrice * (1 + taxRate);
-      const formatted = total.toFixed(2);
-      <span>${formatted}</span>
-    }</div>
-  );
+function PriceDisplay({ rawPrice, taxRate }: { rawPrice: number; taxRate: number }) @{
+  <div className="price-tag">@{
+    const total = rawPrice * (1 + taxRate);
+    const formatted = total.toFixed(2);
+    <span>${formatted}</span>
+  }</div>
 }
 ```
 
