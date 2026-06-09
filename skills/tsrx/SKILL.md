@@ -120,13 +120,25 @@ const Component = (props) => @{
 
 Function declarations and arrow functions may use `@{ ... }` bodies. Top-level early `return` exits the function; otherwise the final JSX-producing statement is the output. In fine-grained targets, guard clauses can compile to reactive control flow.
 
-## Conditional Hooks
+## Migrating Hook Usage
 
-Conditional hooks are supported only inside a TSRX `@{ ... }` template context. This includes hooks inside `@if`, `@for`, and `@switch` control flow when that control flow appears within a `@{ ... }` component body or nested template.
+Do not place hooks inside `@if`, `@for`, `@switch`, conditional branches, loops, or paths after early returns. TSRX no longer treats hooks as conditionally extractable.
 
-Early component returns also permit later hook calls on the remaining render path, provided the component body itself uses `@{ ... }`.
+When migrating older TSRX examples, hoist hook calls before conditional control flow when the hook should always exist for the component:
 
-Hooks in ordinary JavaScript conditionals, loops, switches, or early-return paths outside a TSRX template do not opt into this support. The compiler extracts supported hook-containing paths into target-safe internal components while preserving captured values.
+```tsx
+function Panel(props) @{
+  const data = useData(props.id);
+
+  @if (!props.visible) {
+    <Hidden />
+  } @else {
+    <View data={data} />
+  }
+}
+```
+
+When a hook should only exist for one branch or one repeated item, move that branch or item into an explicit child component and call the hook at the child component's top level.
 
 ## Native `<style>`
 

@@ -1,6 +1,6 @@
 # Introducing TSRX
 
-TSRX is a compiler-agnostic TypeScript language extension for JSX-shaped UI templates with official support for **React, Preact, Solid, Vue, and Ripple** compiler targets. You can think of it as “JSX 2.0”: the same TypeScript-and-markup mental model, extended with first-class control flow, local statements, framework-aware hooks, and native styling.
+TSRX is a compiler-agnostic TypeScript language extension for JSX-shaped UI templates with official support for **React, Preact, Solid, Vue, and Ripple** compiler targets. You can think of it as “JSX 2.0”: the same TypeScript-and-markup mental model, extended with first-class control flow, local statements, and native styling.
 
 A core philosophical pillar of TSRX is **locality**: layout structures, styling, and their direct data or logic dependencies should live as close to each other as possible. TSRX is designed with deliberate architectural restraint to prevent this locality from turning into spaghetti code. The creators of TSRX explicitly recommend splitting deeply nested structures into dedicated child components to keep complexity manageable.
 
@@ -19,7 +19,6 @@ TSRX introduces the following syntax-level features:
 * Function body `@{ ... }`: JSX-producing component bodies
 * JavaScript comments in JSX: `//` and `/* ... */` without expression containers
 * JSX attribute shorthand: `{foo}` as `foo={foo}` in attribute position
-* Conditional hooks: compile-time hook-safe extraction
 * Native `<style>` blocks: scoped CSS and class-map generation
 * `&` lazy destructuring: reactivity-preserving destructuring for Solid, Vue, and Ripple
 
@@ -713,75 +712,7 @@ Changes to `props.disabled` can therefore continue to update the rendered output
 
 ---
 
-# 4. Conditional Hooks
-
-In standard JSX architecture, hooks are bound by strict framework rules. In React, for example, hooks must be invoked unconditionally at the root level of a component.
-
-TSRX relaxes the authoring limitation while preserving hook safety through static compilation.
-
-Conditional hooks are supported only inside a TSRX `@{ ... }` template context. That includes `@` control-flow blocks such as `@if`, `@for`, and `@switch` when those blocks appear within a component or template authored with `@{ ... }`.
-
-### Supported Positions
-
-Hooks may be authored inside:
-
-* `@if` / `@else if` / `@else` branches inside a `@{ ... }` template
-* `@for` loop bodies inside a `@{ ... }` template
-* `@switch` branches inside a `@{ ... }` template
-* render paths after early component returns, when the component body uses `@{ ... }`
-* nested TSRX templates that the compiler can safely isolate
-
-### Output Shape
-
-When a hook appears inside a supported TSRX conditional branch, loop branch, switch branch, or after an early return in a TSRX function body, TSRX can extract the hook-containing render path into an internal component.
-
-The generated boundary preserves hook ordering and scoping rules for the target framework.
-
-### Constraints
-
-* Conditional hooks must be authored inside a `@{ ... }` template context.
-* Ordinary JavaScript control flow in a non-TSRX function body does not opt into conditional hook support.
-* Conditional hook support depends on static compiler analysis.
-* Hook-containing branches must be extractable by the compiler.
-* The compiler preserves access to downstream JSX dependencies by handling captured scope variables during extraction.
-* The emitted implementation depends on the selected compiler target.
-
-### Traditional JSX
-
-```tsx
-// Hand-crafted separation required to satisfy hook constraints
-function StatusWrapper(props: { streamId: string | null }) {
-  if (!props.streamId) {
-    return <p>Disconnected</p>;
-  }
-  return <ActiveStream streamId={props.streamId} />;
-}
-
-function ActiveStream(props: { streamId: string }) {
-  const data = useSubscription(props.streamId);
-  return <div>Live: {data}</div>;
-}
-```
-
-### TSRX Equivalent
-
-```tsx
-function StatusWrapper(props: { streamId: string | null }) @{
-  if (!props.streamId) {
-    return <p>Disconnected</p>;
-  }
-
-  // Hook run conditionally after an early return
-  const data = useSubscription(props.streamId);
-  <div>Live: {data}</div>
-}
-```
-
-The hook can be authored in the same local render path where its data is consumed, while the compiler emits hook-safe target code.
-
----
-
-# 5. Native Scoped CSS: `<style>`
+# 4. Native Scoped CSS: `<style>`
 
 TSRX natively parses standard CSS syntax inside `<style>` tags without requiring styles to be wrapped in JavaScript strings.
 
@@ -916,7 +847,7 @@ The `.paragraph` class is available through the module-scope `styles` map. To st
 
 ---
 
-# 6. Lazy Destructuring (`&`)
+# 5. Lazy Destructuring (`&`)
 
 For fine-grained reactive framework targets such as **Solid**, **Vue**, and **Ripple**, destructuring properties immediately can break the tracking graph by reading primitive accessor values too early.
 
