@@ -39,6 +39,7 @@ Use templates as expressions, directly inside JSX layout, or as function bodies.
 
 - JS comments may appear directly in JSX: `// ...` and `/* ... */`.
 - In JSX attribute position, `{foo}` means `foo={foo}`.
+- Dynamic tag names use expression tags: `<{props.as}>...</{props.as}>` or self-closing `<{props.icon} />`. The opening and closing expressions must match syntactically.
 
 ## `@if`
 

@@ -19,6 +19,7 @@ TSRX introduces the following syntax-level features:
 * Function body `@{ ... }`: JSX-producing component bodies
 * JavaScript comments in JSX: `//` and `/* ... */` without expression containers
 * JSX attribute shorthand: `{foo}` as `foo={foo}` in attribute position
+* Dynamic JSX tag names: `<{expr}>...</{expr}>` for runtime-selected elements or components
 * Native `<style>` blocks: scoped CSS and class-map generation
 * `&` lazy destructuring: reactivity-preserving destructuring for Solid, Vue, and Ripple
 
@@ -126,6 +127,32 @@ This is equivalent to:
 ```
 
 The shorthand is recognized only in JSX attribute position. Between JSX tags, `{foo}` remains a normal JSX child expression.
+
+### Dynamic JSX Tag Names
+
+TSRX supports expression-based JSX tag names for elements or components selected at runtime. Put the tag expression in braces immediately after the opening `<`, and repeat the same expression in the closing tag.
+
+```tsx
+function TextBlock(props: { as: 'p' | 'blockquote'; children: JSX.Children }) @{
+  <{props.as} class="text-block">
+    {props.children}
+  </{props.as}>
+}
+```
+
+The tag expression may evaluate to an intrinsic element name, such as `'section'`, or to a component value.
+
+```tsx
+<{props.panel} title="Details">
+  <p>Dynamic component content</p>
+</{props.panel}>
+```
+
+Constraints:
+
+* The opening and closing dynamic tag expressions must match syntactically.
+* Self-closing dynamic tags use the same opening form: `<{props.icon} />`.
+* Dynamic tag names are JSX tag names, not JSX child expressions; use ordinary `{expr}` between tags when rendering a value as a child.
 
 ---
 
