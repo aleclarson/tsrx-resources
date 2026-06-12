@@ -54,7 +54,7 @@ Use templates as expressions, directly inside JSX layout, or as function bodies.
 }
 ```
 
-Each branch may run local JS statements, then finishes with JSX. The matching branch supplies the output.
+Each branch may run local JS statements, then finishes with JSX. The matching branch supplies the output. When `@if` is the JSX root of a component, `@else` is optional; if no branch matches, the component renders `null`.
 
 ## `@for` / `@empty`
 
