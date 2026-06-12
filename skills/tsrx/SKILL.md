@@ -87,7 +87,7 @@ Each iteration may run local JS statements, then finishes with JSX. `break` and 
 }
 ```
 
-`@case` and `@default` use trailing `:`. Stacked `@case` labels share the next block. The selected branch supplies the output; `break` is omitted.
+`@case` and `@default` use trailing `:`. Stacked `@case` labels share the next block. The selected branch supplies the output; `break` is omitted. When `@switch` is the JSX root of a component, `@default` is optional; if no branch matches, the component renders `null`.
 
 ## `@try` / `@pending` / `@catch`
 
