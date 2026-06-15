@@ -15,7 +15,7 @@ TSRX introduces the following syntax-level features:
 * `@for`: iterable rendering with optional `index`, `key`, and `@empty`
 * `@switch`: non-fallthrough branch selection
 * `@try`: async and error boundary syntax
-* `@{ ... }`: inline statement containers
+* `@{ ... }`: local statements inside JSX layout
 * Function body `@{ ... }`: component bodies with local statements and implicit JSX output
 * JavaScript comments in JSX: `//` and `/* ... */` without expression containers
 * JSX attribute shorthand: `{foo}` as `foo={foo}` in attribute position
