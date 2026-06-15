@@ -119,7 +119,7 @@ const Component = (props) => @{
 }
 ```
 
-Function declarations and arrow functions may use `@{ ... }` bodies. Top-level early `return` exits the function; otherwise the final JSX-producing statement is the output. In fine-grained targets, guard clauses can compile to reactive control flow.
+Function declarations and arrow functions may use `@{ ... }` bodies. Top-level early `return` exits the function; otherwise the final JSX-producing statement is the output.
 
 ## Native `<style>`
 
