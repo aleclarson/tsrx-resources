@@ -119,7 +119,7 @@ const Component = (props) => @{
 }
 ```
 
-Function declarations and arrow functions may use `@{ ... }` bodies. Top-level early `return` exits the function; otherwise the final JSX-producing statement is the output.
+Function declarations and arrow functions may use `@{ ... }` bodies. Top-level early `return` exits the function and may return JSX, `null`, or TSRX `@` blocks; otherwise the final JSX-producing statement is the output.
 
 ## Native `<style>`
 

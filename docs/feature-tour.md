@@ -621,7 +621,7 @@ const Component = (props) => @{
 
 ### Output Shape
 
-A TSRX function body evaluates to the JSX produced by its final statement, unless an earlier `return` statement exits first.
+A TSRX function body evaluates to the JSX produced by its final statement, unless an earlier `return` statement exits first. A top-level early `return` may return ordinary component output such as JSX, `null`, or another TSRX `@` template/control-flow block.
 
 ### Valid Positions
 
@@ -633,7 +633,7 @@ Function body templates are valid as:
 ### Constraints
 
 * The final statement must produce JSX.
-* Early exit `return` statements may still be used in top-level TSRX function bodies.
+* Early exit `return` statements may still be used in top-level TSRX function bodies, and may return JSX, `null`, or TSRX `@` blocks.
 * Function body templates are the only TSRX `@{ ... }` form where `return` statements are allowed.
 * Local JavaScript statements may appear before the final JSX-producing statement.
 
