@@ -55,7 +55,7 @@ There are two important boundaries:
 
 The defining feature of TSRX is the **TSRX template**, denoted by the `@` prefix.
 
-A TSRX template allows JavaScript statements to be written directly inside JSX-producing layout boundaries. Its final statement must produce JSX.
+A TSRX template allows JavaScript statements to be written directly inside JSX-producing layout boundaries.
 
 ### Syntax
 
@@ -76,11 +76,25 @@ The final statement may be:
 * a JSX fragment
 * a TSRX construct that itself produces JSX, such as `@if`, `@for`, `@switch`, or `@try`
 
+### Empty Blocks Render `null`
+
+Any TSRX block that produces no JSX output evaluates to `null`. This applies consistently to `@{ ... }` templates, control-flow branches, loop iterations, `@try`/`@pending`/`@catch` blocks, and TSRX function bodies.
+
+This is especially useful for side-effect-only blocks, such as local log statements:
+
+```tsx
+<div>
+  @{
+    console.log('Rendered user card', props.user.id);
+  }
+  <UserCard user={props.user} />
+</div>
+```
+
 ### Core Rules
 
 * A TSRX template may contain local JavaScript statements before its final JSX-producing statement.
 * `return` statements are allowed only in the top-level `@{ ... }` block that serves as a function body; all other TSRX templates and control-flow blocks produce their result from the final JSX-producing statement.
-* The final statement must produce JSX.
 * Naked text strings or lone JavaScript expressions in the final position must be wrapped in a JSX fragment, such as `<>Text</>`.
 * A TSRX template does not need to be wrapped in curly braces when nested inside JSX layout.
 
@@ -180,12 +194,11 @@ The `@if` block provides structured conditional rendering inside JSX layout. Unl
 
 ### Output Shape
 
-An `@if` block evaluates to the JSX output of exactly one matching branch.
+An `@if` block evaluates to the output of exactly one matching branch.
 
 ### Constraints
 
-* Each branch must produce JSX.
-* Branches may contain local JavaScript statements before their final JSX-producing statement.
+* Branches may contain local JavaScript statements before producing output.
 * `@else if` and `@else` branches are optional.
 
 ### Traditional JSX
@@ -294,7 +307,6 @@ When a `key` is specified, the compiler automatically propagates it to the under
 * `@empty` is optional.
 * `break` and `continue` are not supported inside `@for` blocks.
 * If both `index` and `key` are declared, `index` must come first.
-* Each iteration must produce JSX.
 
 ### Traditional JSX
 
@@ -384,7 +396,7 @@ Multiple `@case` labels may be stacked to share a single output block.
 
 ### Output Shape
 
-A `@switch` block evaluates to the JSX output of the matching case.
+A `@switch` block evaluates to the output of the matching case.
 
 If no case matches, the `@default` block is used when present.
 
@@ -461,7 +473,7 @@ Under the hood, `@pending` handles loading states, mapping to abstractions such 
 }
 ```
 
-`@pending` and `@catch` may also be declared as empty blocks. An empty block renders `null` automatically, and `@catch` may omit its parameter list when the error and reset values are not needed.
+`@pending` and `@catch` may also be declared as empty blocks, and `@catch` may omit its parameter list when the error and reset values are not needed.
 
 ```tsx
 @try {
@@ -495,7 +507,6 @@ It may also receive a `reset` function that triggers a retry of the `@try` block
 
 * `@pending` handles pending asynchronous rendering states.
 * `@catch` handles runtime errors from the protected render tree.
-* The main `@try`, `@pending`, and `@catch` blocks must each produce JSX, except that empty `@pending {}` and `@catch {}` blocks render `null` automatically.
 * `@catch` may omit its parameter list when the thrown error and reset function are not needed.
 * The exact emitted boundary implementation depends on the selected compiler target.
 
@@ -551,7 +562,7 @@ They replace common JSX patterns such as defining and immediately invoking an II
 
 ### Output Shape
 
-A statement container evaluates to the JSX produced by its final statement.
+A statement container evaluates to the JSX produced by its final JSX-producing statement.
 
 ### Valid Positions
 
@@ -561,8 +572,7 @@ Statement containers are valid inside JSX layout.
 
 * A statement container creates a local JavaScript scope.
 * It may contain local declarations and JavaScript statements.
-* `return` statements are not allowed; use the final JSX-producing statement as the container result.
-* Its final statement must produce JSX.
+* `return` statements are not allowed; use the final JSX-producing statement as the container result when the container should render output.
 * Naked text strings or lone expressions in the final position must be wrapped in a fragment.
 
 ### Traditional JSX
@@ -621,7 +631,7 @@ const Component = (props) => @{
 
 ### Output Shape
 
-A TSRX function body evaluates to the JSX produced by its final statement, unless an earlier `return` statement exits first. A top-level early `return` may return ordinary component output such as JSX, `null`, or another TSRX `@` template/control-flow block.
+A TSRX function body evaluates to the JSX produced by its final JSX-producing statement, unless an earlier `return` statement exits first. A top-level early `return` may return ordinary component output such as JSX, `null`, or another TSRX `@` template/control-flow block.
 
 ### Valid Positions
 
@@ -632,10 +642,9 @@ Function body templates are valid as:
 
 ### Constraints
 
-* The final statement must produce JSX.
 * Early exit `return` statements may still be used in top-level TSRX function bodies, and may return JSX, `null`, or TSRX `@` blocks.
 * Function body templates are the only TSRX `@{ ... }` form where `return` statements are allowed.
-* Local JavaScript statements may appear before the final JSX-producing statement.
+* Local JavaScript statements may appear before producing output.
 
 ### Traditional JSX
 

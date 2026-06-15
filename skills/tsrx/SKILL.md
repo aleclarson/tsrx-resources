@@ -11,12 +11,20 @@ For legacy TSRX migration notes, read `references/migration.md`.
 
 ## Template Result Rule
 
-`@{ ... }` creates a local scope whose final statement produces JSX.
+`@{ ... }` creates a local scope whose final statement may produce JSX.
 
 ```tsx
 @{
   const value = compute();
   <View value={value} />
+}
+```
+
+Any TSRX block that produces no JSX output evaluates to `null`. This applies to `@{ ... }` templates, control-flow branches, loop iterations, `@try`/`@pending`/`@catch` blocks, and TSRX function bodies. This is useful for side-effect-only statements such as logging.
+
+```tsx
+@{
+  console.log('Rendered user card', user.id);
 }
 ```
 
@@ -54,7 +62,7 @@ Use templates as expressions, directly inside JSX layout, or as function bodies.
 }
 ```
 
-Each branch may run local JS statements, then finishes with JSX. The matching branch supplies the output. `@else` is optional in both root and nested positions; if no branch matches, the result is `null`.
+Each branch may run local JS statements before producing output. `@else` is optional in both root and nested positions; if no branch matches, the result is `null`.
 
 ## `@for` / `@empty`
 
@@ -68,7 +76,7 @@ Each branch may run local JS statements, then finishes with JSX. The matching br
 
 The suffix after `;` may declare `index`, `key`, or `index` then `key`. The `index` variable is in scope for `key`. A `key` is propagated to rendered elements, including through shorthand fragments. `@empty` renders for empty iterables.
 
-Each iteration may run local JS statements, then finishes with JSX. `break` and `continue` are excluded from `@for` bodies.
+Each iteration may run local JS statements before producing output. `break` and `continue` are excluded from `@for` bodies.
 
 ## `@switch`
 
@@ -101,7 +109,7 @@ Each iteration may run local JS statements, then finishes with JSX. `break` and 
 }
 ```
 
-`@try` protects the main render tree, `@pending` supplies async fallback UI, and `@catch` supplies error UI. `@catch` receives `error` and optionally `reset`. Each block finishes with JSX; emitted boundaries are target-specific.
+`@try` protects the main render tree, `@pending` supplies async fallback UI, and `@catch` supplies error UI. `@catch` receives `error` and optionally `reset`. Emitted boundaries are target-specific.
 
 Use empty `@pending {}` or `@catch (...) {}` blocks when there is no fallback or error UI; do not add an empty fragment solely to satisfy the block.
 
@@ -119,7 +127,7 @@ const Component = (props) => @{
 }
 ```
 
-Function declarations and arrow functions may use `@{ ... }` bodies. Top-level early `return` exits the function and may return JSX, `null`, or TSRX `@` blocks; otherwise the final JSX-producing statement is the output.
+Function declarations and arrow functions may use `@{ ... }` bodies. Top-level early `return` exits the function and may return JSX, `null`, or TSRX `@` blocks; otherwise the final JSX-producing statement supplies the output.
 
 ## Native `<style>`
 
