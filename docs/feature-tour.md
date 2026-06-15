@@ -16,7 +16,7 @@ TSRX introduces the following syntax-level features:
 * `@switch`: non-fallthrough branch selection
 * `@try`: async and error boundary syntax
 * `@{ ... }`: inline statement containers
-* Function body `@{ ... }`: JSX-producing component bodies
+* Function body `@{ ... }`: component bodies with local statements and implicit JSX output
 * JavaScript comments in JSX: `//` and `/* ... */` without expression containers
 * JSX attribute shorthand: `{foo}` as `foo={foo}` in attribute position
 * Dynamic JSX tag names: `<{expr}>...</{expr}>` for runtime-selected elements or components
